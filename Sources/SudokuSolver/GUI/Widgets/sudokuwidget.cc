@@ -1,6 +1,20 @@
+
+/*
+ * sudokuwidget.cc
+ * Implementation file for SudokuWidget class defined in sudokuwidget.hh
+ * 
+ * Author: Perttu Paarlahti
+ * Created 19-Jan-2015
+ * Last modified: 24-Jan-2015
+ */
+
+
 #include "sudokuwidget.hh"
 #include "../Other/sudokutablebuilder.hh"
 #include <QTimer>
+#include <QGraphicsSceneMouseEvent>
+#include <QDebug>
+
 
 namespace SudokuGUI {
 
@@ -11,7 +25,7 @@ SudokuWidget::SudokuWidget(QWidget* parent):
 {   
     // Actual initialition is delayed so that construction will be
     // complete at that time.
-    QTimer::singleShot(50, this, SLOT(init()) );
+    QTimer::singleShot(100, this, SLOT(init() ) );
 }
 
 
@@ -27,8 +41,9 @@ SudokuWidget::~SudokuWidget()
 // Sets squares in their places.
 void SudokuWidget::init()
 {
+    view_->resize(460, 460);
     // Create empty squares
-    const int WIDTH = view_->width();
+    const int WIDTH = 50;
     squares_ = SudokuTableBuilder::createSquares(WIDTH);
     
     // Add squares in the scene.
@@ -45,6 +60,25 @@ void SudokuWidget::init()
     }
     
     view_->setScene(scene_);
+    
+    // Connect signals
+    for (int x=0; x<9; ++x){
+        for (int y=0; y<9; ++y){
+            SudokuSquareItem* sqr = squares_[x][y];
+            connect(sqr, 
+                    SIGNAL(clicked(int, int, QGraphicsSceneMouseEvent*)),
+                    this, 
+                    SLOT(squareClicked(int,int,QGraphicsSceneMouseEvent*)) 
+                    );
+        }
+    }
+}
+
+
+// Private slot that responds on member square clicks.
+void SudokuWidget::squareClicked(int x, int y, QGraphicsSceneMouseEvent* event)
+{
+    qDebug() << x << y << "Pressed:" << event->button();
 }
 
 

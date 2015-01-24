@@ -1,3 +1,15 @@
+
+/*
+ * sudokutablebuilder.cc
+ * Implementation file for SudokuTableBuilder class defined in 
+ * sudokutablebuilder.hh
+ *
+ * Author: Perttu Paarlahti
+ * Created: 19-Jan-2015
+ * Last modified: 14-Jan-2015
+ */
+
+
 #include "sudokutablebuilder.hh"
 
 namespace SudokuGUI{
@@ -23,6 +35,7 @@ SudokuTableBuilder::SqrVec SudokuTableBuilder::createSquares(int width)
         }
     }
     catch(...){
+        // In case of any exception, destroy created squares.
         for (std::vector<SudokuSquareItem*> sqr_v : r_val){
             for (auto it=sqr_v.begin(); it!=sqr_v.end(); ++it){
                 delete *it;
