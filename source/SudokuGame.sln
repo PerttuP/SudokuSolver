@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SudokuLib", "SudokuLib\SudokuLib\SudokuLib.csproj", "{55868767-ED5D-4131-901A-BFBC0428FBCB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SudokuLibTests", "SudokuLib\SudokuLibTests\SudokuLibTests.csproj", "{334A7EAF-2ECD-450E-B5D6-35C9C4E727DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolverLib", "SolverLib\SolverLib.csproj", "{04AC0BCD-9E39-4478-88B9-B6D09CAE1BA2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolverLibTests", "SolverLibTests\SolverLibTests.csproj", "{4887EBAE-A92B-402D-B8D7-A0DE46366241}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SudokuGameEngineLib", "SudokuGameEngineLib\SudokuGameEngineLib.csproj", "{04A6B581-8CBE-4462-BC31-D4B6CB54952B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SudokuGameEngineLibTests", "SudokuGameEngineLibTests\SudokuGameEngineLibTests.csproj", "{78D29BD2-9BB0-4B46-B813-F9A21F10DA7F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SudokuGame", "SudokuGame\SudokuGame.csproj", "{C1ACC669-9C25-4D41-9E22-A8619EB52398}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{55868767-ED5D-4131-901A-BFBC0428FBCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55868767-ED5D-4131-901A-BFBC0428FBCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55868767-ED5D-4131-901A-BFBC0428FBCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55868767-ED5D-4131-901A-BFBC0428FBCB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{334A7EAF-2ECD-450E-B5D6-35C9C4E727DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{334A7EAF-2ECD-450E-B5D6-35C9C4E727DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{334A7EAF-2ECD-450E-B5D6-35C9C4E727DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{334A7EAF-2ECD-450E-B5D6-35C9C4E727DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04AC0BCD-9E39-4478-88B9-B6D09CAE1BA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04AC0BCD-9E39-4478-88B9-B6D09CAE1BA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04AC0BCD-9E39-4478-88B9-B6D09CAE1BA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04AC0BCD-9E39-4478-88B9-B6D09CAE1BA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4887EBAE-A92B-402D-B8D7-A0DE46366241}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4887EBAE-A92B-402D-B8D7-A0DE46366241}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4887EBAE-A92B-402D-B8D7-A0DE46366241}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4887EBAE-A92B-402D-B8D7-A0DE46366241}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04A6B581-8CBE-4462-BC31-D4B6CB54952B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04A6B581-8CBE-4462-BC31-D4B6CB54952B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04A6B581-8CBE-4462-BC31-D4B6CB54952B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04A6B581-8CBE-4462-BC31-D4B6CB54952B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78D29BD2-9BB0-4B46-B813-F9A21F10DA7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78D29BD2-9BB0-4B46-B813-F9A21F10DA7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78D29BD2-9BB0-4B46-B813-F9A21F10DA7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78D29BD2-9BB0-4B46-B813-F9A21F10DA7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1ACC669-9C25-4D41-9E22-A8619EB52398}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1ACC669-9C25-4D41-9E22-A8619EB52398}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1ACC669-9C25-4D41-9E22-A8619EB52398}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1ACC669-9C25-4D41-9E22-A8619EB52398}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
