@@ -107,6 +107,46 @@ namespace SudokuLib.Tests
                     Assert.IsTrue(regions.Region(i).Contains(c));
                 }
             }
+
+            // invalid ID's
+            int[] invalid = new int[] { 0, 10 };
+            foreach (int i in invalid)
+            {
+                try
+                {
+                    List<Coordinate> r = regions.Region(i);
+                }
+                catch (ArgumentOutOfRangeException e)
+                {
+                    Assert.AreEqual("id", e.ParamName);
+                    Assert.IsTrue(e.Message.Contains("Id out of range [1,9]."));
+                }
+            }
+
+            // Try setting null regions.
+            try
+            {
+                regions.SetRegion(null, 1);
+            }
+            catch (ArgumentNullException e)
+            {
+                Assert.AreEqual("coordinates", e.ParamName);
+                Assert.IsTrue(e.Message.Contains("Coordinates must not be null."));
+                Assert.IsNotNull(regions.Region(1));
+            }
+
+            coordinates[0].Add(null);
+            try
+            {
+                regions.SetRegion(coordinates.ElementAt(0), 1);
+            }
+            catch (ArgumentNullException e)
+            {
+                Assert.AreEqual("coordinates", e.ParamName);
+                Assert.IsTrue(e.Message.Contains("None of coordinates should be null."));
+                Assert.IsNotNull(regions.Region(1));
+            }
+
         }
 
 

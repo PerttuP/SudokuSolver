@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System;
-using System.Diagnostics;
+
 
 /// <summary>
 /// This namespace contains basic utilities to create a sudoku game.
@@ -31,10 +31,16 @@ namespace SudokuLib
         /// Constructs new Square having number num assigned.
         /// </summary>
         /// <param name="num">Value to be assigned to the square.</param>
-        /// <remarks>Num must be in range 1-9.</remarks>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Is thrown if num is out of range [1,9].
+        /// </exception>
         public Square(int num)
         {
-            Debug.Assert(num > 0 && num < 10, "Number out of range!");
+            if (num < 1 || num > 9)
+            {
+                throw new ArgumentOutOfRangeException("num", "Number out of range [1,9]!");
+            }
+
             number = num;
             candidates = new SortedSet<int>();
         }
@@ -44,14 +50,19 @@ namespace SudokuLib
         /// Construct new Square having given candidates.
         /// </summary>
         /// <param name="cands">Candidates to be assigned to the square.</param>
-        /// <remarks>All candidates must be in range 1-9.</remarks>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// is thrown if any of given candidates is out of range [1,9].
+        /// </exception>
         public Square(ICollection<int> cands)
         {
             number = 0;
             candidates = new SortedSet<int>();
             foreach (int n in cands)
             {
-                Debug.Assert(n > 0 && n < 10, "Candidate out of range!");
+                if (n < 1 || n > 9)
+                {
+                    throw new ArgumentOutOfRangeException("cands", "Candidate out of range [1,9]!");
+                }
                 candidates.Add(n);
             }
         }
@@ -60,16 +71,18 @@ namespace SudokuLib
         /// <summary>
         /// The number assigned to the square. 
         /// </summary>
-        /// <remarks>
-        /// Only values 1-9 are allowed. Assigning a new number clears old value 
-        /// and candidates. Value 0 returned from getter means that square is empty. 
-        /// </remarks>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Is thrown if value in setter is out of range [1,9].
+        /// </exception>
         public int Number
         {
             get { return number; }
             set
             {
-                Debug.Assert(value > 0 && value < 10, "Square value out of range!");
+                if (value < 1 || value > 9)
+                {
+                    throw new ArgumentOutOfRangeException("value", "Square number out of range [1,9]!");
+                }
                 candidates.Clear();
                 number = value;
             }
@@ -137,11 +150,23 @@ namespace SudokuLib
         /// Add new candidate into square.
         /// </summary>
         /// <param name="value">New candidate.</param>
-        /// <remarks>Only values 1-9 are allowed as parameters.</remarks>
+        /// <exception cref="InvalidOperationException">
+        /// Is thrown if square is not empty.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// is thrown if value is out of range [1,9].
+        /// </exception>
         public void InsertCandidate(int value)
         {
-            Debug.Assert(this.Empty(), "Attempted to insert candidate to non-empty square.");
-            Debug.Assert(value > 0 && value < 10, "Candidate out of range!");
+            if (!this.Empty())
+            {
+                throw new InvalidOperationException("Cannot add candidates to a non-empty square.");
+            }
+            else if (value < 1 || value > 9)
+            {
+                throw new ArgumentOutOfRangeException("value", "Candidate out of range [1,9]!");
+            }
+
             candidates.Add(value);
         }
 
@@ -150,13 +175,25 @@ namespace SudokuLib
         /// Add multiple candidates at once.
         /// </summary>
         /// <param name="values">New candidates.</param>
-        /// <remarks>Only values 1-9 are allowed as parameters.</remarks>
+        /// <exception cref="InvalidOperationException">
+        /// Is thrown if square is not empty.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Is thrown if any of given candidates is out of range [1,9].
+        /// </exception>
         public void InsertCandidate(ICollection<int> values)
         {
-            Debug.Assert(this.Empty(), "Attempted to insert candidate to non-empty square.");
+            if (!this.Empty())
+            {
+                throw new InvalidOperationException("Cannot add candidates to a non-empty square.");
+            }
             foreach (int n in values)
             {
-                Debug.Assert(n > 0 && n < 10, "Candidate out of range!");
+                if (n < 1 || n > 9)
+                {
+                    throw new ArgumentOutOfRangeException("value", "Candidate out of range [1,9]!");
+                }
+
                 candidates.Add(n);
             }
         }

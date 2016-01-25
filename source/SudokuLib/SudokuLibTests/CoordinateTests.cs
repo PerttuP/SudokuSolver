@@ -1,4 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
+using System;
 
 namespace SudokuLib.Tests
 {
@@ -15,6 +17,8 @@ namespace SudokuLib.Tests
         [Timeout(1000)]
         public void CoordinateConstructionTest()
         {
+            List<int> invalidParam = new List<int>(new int[] { 0, 10 });
+
             for (int r=1; r<10; ++r)
             {
                 for (int c=1; c<10; ++c)
@@ -23,7 +27,37 @@ namespace SudokuLib.Tests
                     Assert.AreEqual(r, coord.Row);
                     Assert.AreEqual(c, coord.Column);
                 }
+                foreach (int c in invalidParam)
+                {
+                    try
+                    {
+                        Coordinate coord = new Coordinate(r, c);
+                    }
+                    catch (ArgumentOutOfRangeException e)
+                    {
+                        Assert.AreEqual("column", e.ParamName);
+                        Assert.IsTrue( e.Message.Contains("Column must be in range [1,9].") );
+                    }
+                }
             }
+
+            foreach (int r in invalidParam)
+            {
+                for (int c=1; c<10; ++c)
+                {
+                    try
+                    {
+                        Coordinate coord = new Coordinate(r, c);
+                    }
+                    catch (ArgumentOutOfRangeException e)
+                    {
+                        Assert.AreEqual("row", e.ParamName);
+                        Assert.IsTrue( e.Message.Contains("Row must be in range [1,9].") );
+                    }
+                }
+            }
+            
+
         }
 
 

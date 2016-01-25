@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 
 namespace SudokuLib
 {
@@ -35,11 +34,20 @@ namespace SudokuLib
         /// </summary>
         /// <param name="row">The row number.</param>
         /// <param name="column">The column number.</param>
-        /// <remarks>Only values 1-9 are allowed as row and column.</remarks>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Is thrown if row or column is out of range [1,9].
+        /// </exception>
         public Coordinate(int row, int column)
         {
-            Debug.Assert(row > 0 && row < 10);
-            Debug.Assert(column > 0 && column < 10);
+            if (row <= 0 || row > 9)
+            {
+                throw new ArgumentOutOfRangeException("row", "Row must be in range [1,9].");
+            }
+            else if (column <= 0 || column > 9)
+            {
+                throw new ArgumentOutOfRangeException("column", "Column must be in range [1,9].");
+            }
+
             r = row;
             c = column;
         }
@@ -87,21 +95,40 @@ namespace SudokuLib
             return (r - 1) * 10 + (c - 1);
         }
 
-
+        /// <summary>
+        /// Overrides Object.ToString.
+        /// </summary>
+        /// <returns>String representation of coordinate. String format is '(r,c)', where
+        /// r is row and c is column.</returns>
         public override string ToString()
         {
             return "(" + Row.ToString() +  "," + Column.ToString() +  ")";
         }
 
+
+        /// <summary>
+        /// Parses Coordinate object from string.
+        /// </summary>
+        /// <param name="s">Input string. Format is expected to be '(r,c)', 
+        /// where r is row and c is column.</param>
+        /// <returns>Coordinate object parsed from string.</returns>
+        /// <exception cref="FormatException">
+        /// Thrown, if string does not represent a valid coordinate.
+        /// </exception>
         public static Coordinate Parse(string s)
         {
             if (s == null || s.Length != 5 || s[0] != '(' || s[4] != ')' || s[2] != ',')
             {
-                return null;
+                throw new FormatException("String does not represent a valid coordinate.");
             }
+
             int row = (int)Char.GetNumericValue(s[1]);
             int col = (int)Char.GetNumericValue(s[3]);
-            if (row == 0 || col == 0) return null;
+
+            if (row == -1 || col == -1)
+            {
+                throw new FormatException("String does not represent a valid coordinate.");
+            }
             return new Coordinate(row, col);
         }
     }

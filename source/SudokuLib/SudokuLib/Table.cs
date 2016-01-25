@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
+using System;
 
 namespace SudokuLib
 {
@@ -43,8 +43,16 @@ namespace SudokuLib
         /// <exception cref="ConflictException">
         /// Thrown when initial values contradict each others.
         /// </exception>
+        /// <exception cref="ArgumentException">
+        /// Thrown when given layout is invalid.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Thrown when any of initial numbers is out of range [1,9].
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown when init_values is null.
+        /// </exception>
         /// <remarks>
-        /// All numbers must be valid (in range 1-9). Regions must be valid. 
         /// If regions is null, default regions are used.
         /// </remarks>
         public Table(
@@ -52,13 +60,20 @@ namespace SudokuLib
             SquareRegions regions = null
             )
         {
-            if (regions == null)
+            if (init_values == null)
+            {
+                throw new ArgumentNullException("init_values", "Initial values should not be null.");
+            }
+            else if (regions == null)
             {
                 _layout = SquareRegions.DefaultRegions();
             }
             else
             {
-                Debug.Assert(regions.IsValid());
+                if (!regions.IsValid())
+                {
+                    throw new ArgumentException("layout", "Layout must be valid.");
+                }
                 _layout = regions;
             }
             _squares = new Dictionary<Coordinate, Square>();
@@ -69,7 +84,6 @@ namespace SudokuLib
             // Insert initial values. May throw ConflictException.
             foreach (KeyValuePair<Coordinate, int> pair in _inital_values)
             {
-                Debug.Assert(pair.Value > 0 && pair.Value < 10);
                 this.SetNumber(pair.Key, pair.Value);
             }
         }
@@ -80,8 +94,15 @@ namespace SudokuLib
         /// </summary>
         /// <param name="location">Square location.</param>
         /// <returns>Square's number, or 0 if square is empty.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown when location is null.
+        /// </exception>
         public int NumberAt(Coordinate location)
         {
+            if (location == null)
+            {
+                throw new ArgumentNullException("location", "Location should not be null.");
+            }
             return _squares[location].Number;
         }
 
@@ -91,8 +112,15 @@ namespace SudokuLib
         /// </summary>
         /// <param name="location">Square's location.</param>
         /// <returns>True, if square is empty.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown, when location is null.
+        /// </exception>
         public bool EmptyAt(Coordinate location)
         {
+            if (location == null)
+            {
+                throw new ArgumentNullException("location", "Location should not be null.");
+            }
             return _squares[location].Empty();
         }
 
@@ -102,8 +130,15 @@ namespace SudokuLib
         /// </summary>
         /// <param name="location">Square's location.</param>
         /// <returns>List of candidates.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown, when location is null.
+        /// </exception>
         public List<int> CandidatesAt(Coordinate location)
         {
+            if (location == null)
+            {
+                throw new ArgumentNullException("location", "Location should not be null.");
+            }
             return _squares[location].Candidates();
         }
 
@@ -147,13 +182,23 @@ namespace SudokuLib
         /// <exception cref="ConflictException">
         /// Thrown, if assignment causes a conflict (basic guarantee).
         /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown, if location is null.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Thrown, when number is out of range [0,9].
+        /// </exception>
         /// <remarks>
         /// Number must be in range 0-9. 
         /// If number is 0, the square's current number is removed.
         /// </remarks>
         public void SetNumber(Coordinate location, int number)
         {
-            Debug.Assert(number >= 0 && number < 10);
+            if (location == null)
+            {
+                throw new ArgumentNullException("location", "Location should not be null.");
+            }
+
             if (number == 0)
             {
                 this.ClearSquare(location);
@@ -208,8 +253,16 @@ namespace SudokuLib
         /// </summary>
         /// <param name="location">Reference square.</param>
         /// <returns>List of coordinates pointing to squares in same region.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown, if location is null.
+        /// </exception>
         public List<Coordinate> GetRegionOf(Coordinate location)
         {
+            if (location == null)
+            {
+                throw new ArgumentNullException("location", "Location should not be null.");
+            }
+
             List<Coordinate> rv = new List<Coordinate>();
             int id = _associations[location].regionID;
             // Copy coordinates to return value.

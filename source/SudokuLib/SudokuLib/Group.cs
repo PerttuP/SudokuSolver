@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Diagnostics;
+using System;
 
 namespace SudokuLib
 {
@@ -15,20 +15,27 @@ namespace SudokuLib
         /// Construct new group for given squares.
         /// </summary>
         /// <param name="squares">Group members.</param>
-        /// <remarks>
-        /// There has to be exactly 9 member squares. 
-        /// All squares must be different objects.
-        /// </remarks>
+        /// <exception cref="ArgumentException">
+        /// Is thrown, if number of squares is not 9 or there are duplicate squares.
+        /// </exception>
         public Group(ICollection<Square> squares)
         {
-            Debug.Assert(squares.Count() == 9, "Wrong number of member squares.");
+            if (squares.Count() != 9)
+            {
+                throw new ArgumentException("Group must have exactly 9 members.", "squares");
+            }
+
             for (int i=0; i<9; ++i)
             {
                 for (int j=i+1; j<9; ++j)
                 {
-                    Debug.Assert( !squares.ElementAt(i).Equals( squares.ElementAt(j) ) );
+                    if ( squares.ElementAt(i).Equals( squares.ElementAt(j) ))
+                    {
+                        throw new ArgumentException("All squares in group must be different objects.", "squares");
+                    }
                 }
             }
+
             members = new List<Square>(squares);
         }
 

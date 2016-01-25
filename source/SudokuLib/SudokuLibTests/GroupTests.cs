@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace SudokuLib.Tests
 {
@@ -32,6 +33,57 @@ namespace SudokuLib.Tests
             Assert.IsFalse(grp.CheckConflict());
         }
 
+
+        /// <summary>
+        /// Test constructor with invalid parameters.
+        /// </summary>
+        [TestMethod()]
+        [Timeout(1000)]
+        public void GroupInvalidConstructorTest()
+        {
+            List<Square> squares = new List<Square>();
+
+            // Too few squares.
+            for (int i=1; i<10; ++i)
+            {
+                try
+                {
+                    Group g = new Group(squares);
+                }
+                catch (ArgumentException e)
+                {
+                    Assert.AreEqual("squares", e.ParamName);
+                    Assert.IsTrue( e.Message.Contains("Group must have exactly 9 members.") );
+                }
+                squares.Add(new Square(i));
+            }
+
+            // Too many squares
+            squares.Add(new Square());
+            try
+            {
+                Group g = new Group(squares);
+            }
+            catch (ArgumentException e)
+            {
+                Assert.AreEqual("squares", e.ParamName);
+                Assert.IsTrue(e.Message.Contains("Group must have exactly 9 members."));
+            }
+
+            // Duplicates.
+            squares.RemoveAt(9);
+            squares[0] = squares[1];
+            try
+            {
+                Group g = new Group(squares);
+            }
+            catch (ArgumentException e)
+            {
+                Assert.AreEqual("squares", e.ParamName);
+                Assert.IsTrue(e.Message.Contains("All squares in group must be different objects."));
+            }
+
+        }
 
         /// <summary>
         /// Tests the ReduceCandidates method.

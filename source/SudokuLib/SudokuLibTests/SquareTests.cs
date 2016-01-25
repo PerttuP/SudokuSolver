@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace SudokuLib.Tests
 {
@@ -37,6 +38,20 @@ namespace SudokuLib.Tests
                 Assert.IsFalse(sqr.Empty());
                 Assert.AreEqual(0, sqr.Candidates().Count());
             }
+
+            int[] invalid = new int[] { 0, 10 };
+            foreach (int i in invalid)
+            {
+                try
+                {
+                    Square s = new Square(i);
+                }
+                catch (ArgumentOutOfRangeException e)
+                {
+                    Assert.AreEqual("num", e.ParamName);
+                    Assert.IsTrue(e.Message.Contains("Number out of range [1,9]!"));
+                }
+            }
         }
 
 
@@ -58,6 +73,22 @@ namespace SudokuLib.Tests
                 foreach (int n in sqr.Candidates())
                 {
                     Assert.IsTrue(cands.Contains(n));
+                }
+            }
+
+            // Invalid candidate
+            int[] invalid = new int[] { 0, 10 };
+            foreach (int i in invalid)
+            {
+                cands[0] = i;
+                try
+                {
+                    Square s = new Square(cands);
+                }
+                catch (ArgumentOutOfRangeException e)
+                {
+                    Assert.AreEqual("cands", e.ParamName);
+                    Assert.IsTrue(e.Message.Contains("Candidate out of range [1,9]!"));
                 }
             }
         }
@@ -84,6 +115,22 @@ namespace SudokuLib.Tests
                 Assert.IsFalse(sqr.Empty());
                 Assert.AreEqual(i, sqr.Number);
                 Assert.AreEqual(0, sqr.Candidates().Count());
+            }
+
+            int[] invalid = new int[] { 0, 10 };
+            int latestNum = sqr.Number;
+            foreach (int i in invalid)
+            {
+                try
+                {
+                    sqr.Number = i;
+                }
+                catch (ArgumentOutOfRangeException e)
+                {
+                    Assert.AreEqual("value", e.ParamName);
+                    Assert.IsTrue(e.Message.Contains("Square number out of range [1,9]!"));
+                    Assert.AreEqual(latestNum, sqr.Number);
+                }
             }
         }
 
@@ -217,6 +264,34 @@ namespace SudokuLib.Tests
                     Assert.IsTrue(sqr.HasCandidate(j));
                 }
             }
+
+            // invalid candidate
+            int[] invalid = new int[] { 0, 10 };
+            foreach (int i in invalid)
+            {
+                try
+                {
+                    sqr.InsertCandidate(i);
+                }
+                catch (ArgumentOutOfRangeException e)
+                {
+                    Assert.AreEqual("value", e.ParamName);
+                    Assert.IsTrue(e.Message.Contains("Candidate out of range [1,9]!"));
+                    Assert.IsFalse(sqr.Candidates().Contains(i));
+                }
+            }
+
+            // Non-empty square
+            sqr.Number = 1;
+            try
+            {
+                sqr.InsertCandidate(1);
+            }
+            catch (InvalidOperationException e)
+            {
+                Assert.IsTrue(e.Message.Contains("Cannot add candidates to a non-empty square."));
+                Assert.IsTrue(sqr.Candidates().Count() == 0);
+            }
         }
 
 
@@ -242,6 +317,36 @@ namespace SudokuLib.Tests
                     Assert.IsFalse(sqr.HasCandidate(j));
                 }
                 sqr.Clear();
+            }
+
+            // Non-empty square
+            sqr.Number = 1;
+            try
+            {
+                sqr.InsertCandidate(1);
+            }
+            catch (InvalidOperationException e)
+            {
+                Assert.IsTrue(e.Message.Contains("Cannot add candidates to a non-empty square."));
+                Assert.IsTrue(sqr.Candidates().Count() == 0);
+            }
+            sqr.Clear();
+
+            // Invalid candidates.
+            int[] invalid = new int[] { 0, 10 };
+            foreach (int i in invalid)
+            {
+                cands[0] = i;
+                try
+                {
+                    sqr.InsertCandidate(cands);
+                }
+                catch (ArgumentOutOfRangeException e)
+                {
+                    Assert.AreEqual("value", e.ParamName);
+                    Assert.IsTrue(e.Message.Contains("Candidate out of range [1,9]!"));
+                    Assert.IsFalse(sqr.Candidates().Contains(i));
+                }
             }
         }
 

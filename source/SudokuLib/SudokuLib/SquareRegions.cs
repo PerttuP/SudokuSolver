@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Diagnostics;
 
 namespace SudokuLib
 {
@@ -128,16 +127,30 @@ namespace SudokuLib
         /// </summary>
         /// <param name="coordinates">List of square locations associated to the region.</param>
         /// <param name="id">Region's unique id.</param>
-        /// <remarks>
-        /// Id must be in range 1-9. None of coordinates should be null.
-        /// </remarks>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Is thrown if id is out of range [1,9].
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Is thrown if coordinates or any of its elements is null.
+        /// </exception>
         public void SetRegion(IEnumerable<Coordinate> coordinates, int id)
         {
-            Debug.Assert(id > 0 && id < 10);
+            if (id < 1 || id > 9)
+            {
+                throw new ArgumentOutOfRangeException("id", "Id out of range [1,9].");
+            }
+            else if (coordinates == null)
+            {
+                throw new ArgumentNullException("coordinates", "Coordinates must not be null.");
+            }
             foreach (Coordinate c in coordinates)
             {
-                Debug.Assert(c != null);
+                if (c == null)
+                {
+                    throw new ArgumentNullException("coordinates", "None of coordinates should be null.");
+                }
             }
+
             regions[id - 1] = new List<Coordinate>(coordinates);
         }
 
@@ -150,13 +163,20 @@ namespace SudokuLib
         /// List of coordinates assigned to the region, 
         /// or null if the region is undefined (invalid regions).
         /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Is thrown if id is out of range [1,9].
+        /// </exception>
         /// <remarks>
         /// The caller should not trust in returned coordinates if IsValid() retirns false.
         /// </remarks>
         /// 
         public List<Coordinate> Region(int id)
         {
-            Debug.Assert(id > 0 && id < 10);
+            if (id < 1 || id > 9)
+            {
+                throw new ArgumentOutOfRangeException("id", "Id out of range [1,9].");
+            }
+
             return regions.ElementAt(id - 1);
         }
 
@@ -321,17 +341,26 @@ namespace SudokuLib
         /// </summary>
         /// <param name="s">Input string.</param>
         /// <returns>
-        /// New SquareRegions object or null, if parsing fails. 
-        /// SquareRegions object may be invalid, if data is.
+        /// New SquareRegions object parsed from the string. 
+        /// SquareRegions object may not be invalid, if data isn't.
         /// </returns>
+        /// <exception cref="FormatException">
+        /// Thrown, if SquareRegions object cannot be parsed from string.
+        /// </exception>
         public static SquareRegions Parse(string s)
         {
             SquareRegions rv = new SquareRegions();
             List<String> regions = new List<String>(s.Split('/'));
+            if (regions.Count != 9)
+            {
+                throw new FormatException("String does not represent a valid SquareRegions.");
+            }
+
             for (int i=0; i<regions.Count; ++i)
             {
                 if (regions[i].Length == 0)
                 {
+                    rv.SetRegion(new List<Coordinate>(), i + 1);
                     continue;
                 }
                 List<String> locations = new List<string>(regions[i].Split(';'));
@@ -339,10 +368,6 @@ namespace SudokuLib
                 foreach (string loc in locations)
                 {
                     Coordinate c = Coordinate.Parse(loc);
-                    if (c == null)
-                    {
-                        return null;
-                    }
                     coords.Add(c);
                 }
                 rv.SetRegion(coords, i + 1);
