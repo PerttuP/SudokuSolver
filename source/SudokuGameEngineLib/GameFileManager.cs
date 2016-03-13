@@ -70,7 +70,7 @@ namespace SudokuGameEngineLib
             Dictionary<Coordinate, int> initVals = new Dictionary<Coordinate, int>();
             Dictionary<Coordinate, int> userVals = new Dictionary<Coordinate, int>();
             Dictionary<Coordinate, int> solverVals = new Dictionary<Coordinate, int>();
-            TimeSpan elapsedTime = new TimeSpan();
+            Dictionary<Coordinate, List<int>> candidates = new Dictionary<Coordinate, List<int>>();
             SquareRegions layout = new SquareRegions();
 
             if (!root.Name.LocalName.Equals("SudokuGame"))
@@ -81,11 +81,7 @@ namespace SudokuGameEngineLib
             IEnumerable<XElement> children = root.Elements();
             foreach (XElement e in children)
             {
-                if (e.Name.LocalName.Equals("ElapsedTime"))
-                {
-                    elapsedTime = TimeSpan.Parse(e.FirstAttribute.Value);
-                }
-                else if (e.Name.LocalName.Equals("SudokuTable"))
+                if (e.Name.LocalName.Equals("SudokuTable"))
                 {
                     layout = SquareRegions.Parse(e.Attribute("Layout").Value);
                     IEnumerable<XElement> squares = e.Elements("Square");
@@ -110,6 +106,22 @@ namespace SudokuGameEngineLib
                         {
                             solverVals.Add(location, number);
                         }
+                        else if (source.Equals("Empty"))
+                        {
+                            // Get candidates
+                            string cands = sqr.Attribute("Candidates").Value;
+                            if (cands.Length == 0)
+                            {
+                                continue;
+                            }
+                            List<string> nums_str = new List<string>(cands.Split(','));
+                            List<int> nums = new List<int>();
+                            foreach (string str in nums_str)
+                            {
+                                nums.Add(Int32.Parse(str));
+                            }
+                            candidates.Add(location, nums);
+                        }
                         else
                         {
                             return new GameData();
@@ -117,7 +129,7 @@ namespace SudokuGameEngineLib
                     }
                 }
             }
-            return new GameData(initVals, userVals, solverVals, elapsedTime, layout);
+            return new GameData(initVals, userVals, solverVals, candidates, layout);
         }
 
 
@@ -130,10 +142,6 @@ namespace SudokuGameEngineLib
         {
             XElement root = new XElement("SudokuGame");
 
-            // Save elapsed time.
-            XElement time = new XElement("ElapsedTime", new XAttribute("Value", data.ElapsedTime.ToString()));
-            root.Add(time);
-
             // Save table.
             XElement table = new XElement("SudokuTable");
             table.Add(new XAttribute("Layout", data.Layout.ToString()));
@@ -143,6 +151,7 @@ namespace SudokuGameEngineLib
                 square.Add(new XAttribute("Provider", "Initial"));
                 square.Add(new XAttribute("Location", pair.Key));
                 square.Add(new XAttribute("Number", pair.Value));
+                square.Add(new XAttribute("Candidates", ""));
                 table.Add(square);
             }
             foreach (KeyValuePair<Coordinate, int> pair in data.UserValues)
@@ -151,6 +160,7 @@ namespace SudokuGameEngineLib
                 square.Add(new XAttribute("Provider", "User"));
                 square.Add(new XAttribute("Location", pair.Key));
                 square.Add(new XAttribute("Number", pair.Value));
+                square.Add(new XAttribute("Candidates", ""));
                 table.Add(square);
             }
             foreach (KeyValuePair<Coordinate, int> pair in data.SolverValues)
@@ -159,8 +169,19 @@ namespace SudokuGameEngineLib
                 square.Add(new XAttribute("Provider", "Solver"));
                 square.Add(new XAttribute("Location", pair.Key));
                 square.Add(new XAttribute("Number", pair.Value));
+                square.Add(new XAttribute("Candidates", ""));
                 table.Add(square);
             }
+            foreach (KeyValuePair<Coordinate, List<int>> pair in data.Candidates)
+            {
+                XElement square = new XElement("Square");
+                square.Add(new XAttribute("Provider", "Empty"));
+                square.Add(new XAttribute("Location", pair.Key));
+                square.Add(new XAttribute("Number", 0));
+                square.Add(new XAttribute("Candidates", string.Join(",", pair.Value)));
+                table.Add(square);
+            }
+
             root.Add(table);
             return root;
         }

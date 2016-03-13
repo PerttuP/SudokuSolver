@@ -18,7 +18,7 @@ namespace SudokuGameEngineLib
         private readonly IDictionary<Coordinate, int> _userVals;
         private readonly IDictionary<Coordinate, int> _solverVals;
         private readonly SquareRegions _layout;
-        private readonly TimeSpan _elapsedTime;
+        private readonly IDictionary<Coordinate, List<int>> _candidates;
 
         /// <summary>
         /// Construct an invalid GameData.
@@ -29,7 +29,7 @@ namespace SudokuGameEngineLib
             _userVals = null;
             _solverVals = null;
             _layout = null;
-            _elapsedTime = new TimeSpan();
+            _candidates = null;
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace SudokuGameEngineLib
             IDictionary<Coordinate,int> initVals,
             IDictionary<Coordinate,int> userVals,
             IDictionary<Coordinate,int> solverVals,
-            TimeSpan elapsedTime,
+            IDictionary<Coordinate, List<int>> candidates,
             SquareRegions layout
             )
         {
@@ -54,7 +54,7 @@ namespace SudokuGameEngineLib
             _initVals = initVals;
             _userVals = userVals;
             _solverVals = solverVals;
-            _elapsedTime = elapsedTime;
+            _candidates = candidates;
             _layout = layout;
 
         }
@@ -84,12 +84,13 @@ namespace SudokuGameEngineLib
         }
 
         /// <summary>
-        /// Time elapsed since game was started.
+        /// User-set candidates.
         /// </summary>
-        public TimeSpan ElapsedTime
+        public IDictionary<Coordinate, List<int>> Candidates
         {
-            get { return _elapsedTime; }
+            get { return _candidates; }
         }
+
 
         /// <summary>
         /// Square regions.
@@ -105,7 +106,7 @@ namespace SudokuGameEngineLib
         /// <returns></returns>
         public bool IsValid()
         {
-            return _initVals != null && _solverVals != null && _userVals != null;
+            return _initVals != null && _solverVals != null && _userVals != null && _candidates != null;
         }
     }
 }

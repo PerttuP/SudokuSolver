@@ -213,12 +213,12 @@ namespace SudokuGameEngineLib
         }
 
 
-        public GameData GameData(TimeSpan time)
+        public GameData GameData()
         {
             Dictionary<Coordinate, int> initVals = new Dictionary<Coordinate, int>();
             Dictionary<Coordinate, int> userVals = new Dictionary<Coordinate, int>();
             Dictionary<Coordinate, int> solverVals = new Dictionary<Coordinate, int>();
-            Dictionary<Coordinate, IEnumerable<int>> candidates = new Dictionary<Coordinate, IEnumerable<int>>();
+            Dictionary<Coordinate, List<int>> candidates = new Dictionary<Coordinate, List<int>>();
 
             for (int row=1; row<10; ++row)
             {
@@ -240,14 +240,14 @@ namespace SudokuGameEngineLib
                         case SquareNumberSource.NONE:
                             if (_infos[c].Candidates().Count() != 0)
                             {
-                                candidates.Add(c, _infos[c].Candidates());
+                                candidates.Add(c, new List<int>(_infos[c].Candidates()));
                             }
                             break;
                     }
                 }
             }
 
-            return new GameData(initVals, userVals, solverVals, time, _readyTable.Regions());
+            return new GameData(initVals, userVals, solverVals, candidates, _readyTable.Regions());
         }
     }
 }

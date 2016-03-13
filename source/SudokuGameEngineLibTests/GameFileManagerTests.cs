@@ -30,7 +30,6 @@ namespace SudokuGameEngineLib.Tests
         /// Positive tests for writing gamedata and reading it again.
         /// </summary>
         [TestMethod()]
-        [Timeout(2000)]
         [DeploymentItem("TestData.xls")]
         [DataSource("TableValidSource")]
         public void GameFileManagerReadWriteValidTest()
@@ -42,9 +41,9 @@ namespace SudokuGameEngineLib.Tests
             IDictionary<Coordinate, int> initVals = ParseSudokuValues(initStr);
             IDictionary<Coordinate, int> readyVals = ParseSudokuValues(readyStr);
             SquareRegions layout = SquareRegions.Parse(layoutStr);
-            TimeSpan time = new TimeSpan(1, 10, 10);
             Dictionary<Coordinate, int> userVals = new Dictionary<Coordinate, int>();
             Dictionary<Coordinate, int> solverVals = new Dictionary<Coordinate, int>();
+            Dictionary<Coordinate, List<int>> candidates = new Dictionary<Coordinate, List<int>>();
 
             foreach (Coordinate c in initVals.Keys)
             {
@@ -64,7 +63,7 @@ namespace SudokuGameEngineLib.Tests
                 ++counter;
             }
 
-            GameData data = new GameData(initVals, userVals, solverVals, time, layout);
+            GameData data = new GameData(initVals, userVals, solverVals, candidates, layout);
             GameFileManager manager = new GameFileManager();
             manager.WriteGame("tmpfile.xml", data);
             GameData data2 = manager.ReadGame("tmpfile.xml");
@@ -96,11 +95,11 @@ namespace SudokuGameEngineLib.Tests
 
         private void CompareGameData(GameData lhs, GameData rhs)
         {
-            Assert.AreEqual(lhs.ElapsedTime, rhs.ElapsedTime);
             Assert.IsTrue(lhs.Layout.IsEquivalent(rhs.Layout));
             Assert.AreEqual(lhs.InitialValues.Count, rhs.InitialValues.Count);
             Assert.AreEqual(lhs.UserValues.Count, rhs.UserValues.Count);
             Assert.AreEqual(lhs.SolverValues.Count, rhs.SolverValues.Count);
+            Assert.AreEqual(lhs.Candidates.Count, rhs.Candidates.Count);
 
             foreach (KeyValuePair<Coordinate,int> pair in lhs.InitialValues)
             {
@@ -113,6 +112,16 @@ namespace SudokuGameEngineLib.Tests
             foreach (KeyValuePair<Coordinate, int> pair in lhs.SolverValues)
             {
                 Assert.IsTrue(rhs.SolverValues.Contains(pair));
+            }
+
+            foreach (KeyValuePair<Coordinate, List<int>> pair in lhs.Candidates){
+                Assert.IsTrue(rhs.Candidates.ContainsKey(pair.Key));
+                List<int> rhsList = rhs.Candidates[pair.Key];
+                Assert.AreEqual(pair.Value.Count, rhsList.Count);
+                foreach (int n in rhsList)
+                {
+                    Assert.IsTrue(pair.Value.Contains(n));
+                }
             }
         }
     }

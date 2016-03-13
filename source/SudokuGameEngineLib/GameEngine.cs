@@ -11,13 +11,11 @@ namespace SudokuGameEngineLib
     {
         private IGameUI _ui;
         private TableModel _table;
-        private TimeSpan _time;
 
         public GameEngine()
         {
             _ui = null;
             _table = null;
-            _time = new TimeSpan();
         }
 
 
@@ -90,7 +88,13 @@ namespace SudokuGameEngineLib
                 {
                     _table.SetNumber(pair.Key, pair.Value, SquareNumberSource.SOLVER);
                 }
-                _time = data.ElapsedTime;
+                foreach (KeyValuePair<Coordinate,List<int>> pair in data.Candidates)
+                {
+                    foreach (int c in pair.Value)
+                    {
+                        _table.AddCandidate(pair.Key, c);
+                    }
+                }
 
                 _ui.setTableModel(_table);
                 return true;
@@ -111,7 +115,7 @@ namespace SudokuGameEngineLib
 
         public bool SaveGame(string fileName)
         {
-            GameData data = _table.GameData(_time);
+            GameData data = _table.GameData();
             GameFileManager manager = new GameFileManager();
             return manager.WriteGame(fileName, data);
         }
