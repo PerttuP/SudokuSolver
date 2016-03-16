@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Xml.Linq;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SudokuLib;
 using System.IO;
 
@@ -90,7 +87,7 @@ namespace SudokuGameEngineLib
                         string source = sqr.Attribute("Provider").Value;
                         Coordinate location = Coordinate.Parse(sqr.Attribute("Location").Value);
                         int number = int.Parse(sqr.Attribute("Number").Value);
-                        if (number <= 0 || number > 9 || location == null)
+                        if (!source.Equals("Empty") && (number <= 0 || number > 9 || location == null))
                         {
                             return new GameData();
                         }
