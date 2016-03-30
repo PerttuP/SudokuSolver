@@ -84,7 +84,13 @@ namespace SudokuGameEngineLib.Tests
         /// </summary>
         [TestMethod()]
         [DeploymentItem("TestData.xls")]
-        [DataSource("InvalidGameDataFiles")]
+        [DeploymentItem("empty_number.xml")]
+        [DeploymentItem("invalid_candidate.xml")]
+        [DeploymentItem("invalid_layout.xml")]
+        [DeploymentItem("missing_root.xml")]
+        [DeploymentItem("non_empty_0.xml")]
+        [DeploymentItem("syntax_error.xml")]
+        [DataSource("InvalidGameFileSource")]
         [Timeout(2000)]
         public void GameFileManagerReadInvalidTest()
         {

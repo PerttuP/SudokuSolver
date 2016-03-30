@@ -81,13 +81,15 @@ namespace SudokuGameEngineLib
                 if (e.Name.LocalName.Equals("SudokuTable"))
                 {
                     layout = SquareRegions.Parse(e.Attribute("Layout").Value);
+                    if (!layout.IsValid()) return new GameData();
+
                     IEnumerable<XElement> squares = e.Elements("Square");
                     foreach (XElement sqr in squares)
                     {
                         string source = sqr.Attribute("Provider").Value;
                         Coordinate location = Coordinate.Parse(sqr.Attribute("Location").Value);
                         int number = int.Parse(sqr.Attribute("Number").Value);
-                        if (!source.Equals("Empty") && (number <= 0 || number > 9 || location == null))
+                        if (!source.Equals("Empty") && (number <= 0 || number > 9 ))
                         {
                             return new GameData();
                         }
@@ -105,6 +107,7 @@ namespace SudokuGameEngineLib
                         }
                         else if (source.Equals("Empty"))
                         {
+                            if (number != 0) return new GameData();
                             // Get candidates
                             string cands = sqr.Attribute("Candidates").Value;
                             if (cands.Length == 0)

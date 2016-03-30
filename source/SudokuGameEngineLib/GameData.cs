@@ -106,7 +106,9 @@ namespace SudokuGameEngineLib
         /// <returns></returns>
         public bool IsValid()
         {
-            return _initVals != null && _solverVals != null && _userVals != null && _candidates != null;
+            return _initVals != null && _solverVals != null && 
+                _userVals != null && _candidates != null && _layout != null &&
+                _layout.IsValid();
         }
     }
 }
